@@ -2051,7 +2051,7 @@
   <dialog id="welcomeModal" aria-labelledby="welcomeTitle">
     <form id="welcomeForm">
       <div class="modal-head"><h2 id="welcomeTitle">Make this workspace yours</h2></div>
-      <div class="modal-body"><p>A sample workspace is ready to explore. Clear the examples anytime when you want to make it your own. Your data stays in this browser.</p><div class="form-grid">
+      <div class="modal-body"><p>This fictional teacher workspace includes example names and financial figures. Avoid entering identifiable student or family information. Clear the examples anytime to make it your own; your data stays in this browser.</p><div class="form-grid">
         <div class="form-field full"><label for="welcomeName">Your name</label><input id="welcomeName" name="name" maxlength="40" autocomplete="given-name" placeholder="Your name"></div>
         <div class="form-field full"><label for="welcomeAccent">Accent colour</label><select id="welcomeAccent" name="accent"><option value="green">Sage</option><option value="glacier">Glacier</option><option value="turquoise">Turquoise</option><option value="plum">Plum</option><option value="rose">Rosé burgundy</option></select></div>
         <div class="form-field full"><label for="welcomeCurrency">Currency</label><select id="welcomeCurrency" name="currency"><option value="KES">KES · Kenyan shilling</option><option value="NGN">NGN · Nigerian naira</option><option value="GHS">GHS · Ghanaian cedi</option><option value="UGX">UGX · Ugandan shilling</option><option value="TZS">TZS · Tanzanian shilling</option><option value="ZAR">ZAR · South African rand</option><option value="EGP">EGP · Egyptian pound</option><option value="USD">USD · US dollar</option><option value="CAD">CAD · Canadian dollar</option><option value="AUD">AUD · Australian dollar</option><option value="NZD">NZD · New Zealand dollar</option><option value="EUR">EUR · Euro</option><option value="GBP">GBP · British pound</option><option value="INR">INR · Indian rupee</option><option value="JPY">JPY · Japanese yen</option><option value="CNY">CNY · Chinese yuan</option><option value="BRL">BRL · Brazilian real</option><option value="CHF">CHF · Swiss franc</option><option value="SGD">SGD · Singapore dollar</option><option value="AED">AED · UAE dirham</option></select></div>
@@ -3848,25 +3848,34 @@
       const today = TODAY();
       const now = new Date();
       const monthDate = (monthsBack, day) => toISODate(new Date(now.getFullYear(), now.getMonth() - monthsBack, day));
+      const nextMonday = dateOffset((8 - now.getDay()) % 7 || 7);
       const pick = (list, i) => list[i % list.length];
       const isWeekday = offset => { const d = getDateOffset(offset).getDay(); return d !== 0 && d !== 6; };
 
       /* ---------- Tasks ---------- */
-      const topics = ['cell structure quiz','food webs worksheet','pond water lab report','energy pyramid homework','vocabulary test','climate data task','plant growth journal','mid-term exam','habitat poster','weather unit quiz','soil lab write-up','recycling project'];
-      const histProjects = [['sample-project-ecosystems','Ecosystems unit'],['sample-project-ecosystems','Ecosystems unit'],['sample-project-sciencefair','Science fair'],['sample-project-conferences','Parent-teacher conferences']];
+      const topics = [
+        { title:'food webs worksheet', project:'sample-project-ecosystems', projectName:'Ecosystems unit' },
+        { title:'pond water lab report', project:'sample-project-ecosystems', projectName:'Ecosystems unit' },
+        { title:'energy pyramid homework', project:'sample-project-ecosystems', projectName:'Ecosystems unit' },
+        { title:'climate data task', project:'sample-project-ecosystems', projectName:'Ecosystems unit' },
+        { title:'soil lab write-up', project:'sample-project-ecosystems', projectName:'Ecosystems unit' },
+        { title:'plant growth journal', project:'sample-project-sciencefair', projectName:'Science fair' },
+        { title:'habitat poster', project:'sample-project-sciencefair', projectName:'Science fair' },
+        { title:'recycling project', project:'sample-project-sciencefair', projectName:'Science fair' }
+      ];
       const histTasks = [];
       topics.forEach((topic, i) => {
-        const proj = pick(histProjects, i);
-        histTasks.push({ id:'sample-task-mark-' + i, title:'Mark Grade 7 ' + topic, project:proj[1], projectId:proj[0], priority:pick(['high','medium','medium','low'], i), due:dateOffset(-(4 + i * 9)), time:'16:00', done:true, completedAt:dateOffset(-(4 + i * 9)), tags:['marking'], goalId:i < 5 ? 'sample-goal-marking' : '', notes:'Returned with written feedback and a class summary of common errors.' });
-        histTasks.push({ id:'sample-task-plan-' + i, title:'Plan lesson: ' + topic.replace(/ (quiz|test|exam|homework|worksheet|task)$/,''), project:proj[1], projectId:proj[0], priority:pick(['medium','high','low'], i), due:dateOffset(-(8 + i * 9)), time:'15:30', done:true, completedAt:dateOffset(-(9 + i * 9)), tags:['planning'], notes:'Objectives, starter, main activity, exit ticket.' });
-        histTasks.push({ id:'sample-task-prep-' + i, title:'Prepare materials for ' + topic.replace(/ (quiz|test|exam|homework|worksheet|task)$/,''), project:proj[1], projectId:proj[0], priority:'low', due:dateOffset(-(6 + i * 9)), time:'', done:true, completedAt:dateOffset(-(6 + i * 9)), tags:['preparation'], notes:'' });
+        const topicName = topic.title.replace(/ (quiz|test|exam|homework|worksheet|task|report|write-up|journal|poster|project)$/,'');
+        histTasks.push({ id:'sample-task-mark-' + i, title:'Mark Grade 7 ' + topic.title, project:topic.projectName, projectId:topic.project, priority:pick(['high','medium','medium','low'], i), due:dateOffset(-(4 + i * 9)), time:'16:00', done:true, completedAt:dateOffset(-(4 + i * 9)), tags:['marking'], goalId:i < 5 ? 'sample-goal-marking' : '', notes:'Returned with written feedback and a class summary of common errors.' });
+        histTasks.push({ id:'sample-task-plan-' + i, title:'Plan lesson: ' + topicName, project:topic.projectName, projectId:topic.project, priority:pick(['medium','high','low'], i), due:dateOffset(-(8 + i * 9)), time:'15:30', done:true, completedAt:dateOffset(-(9 + i * 9)), tags:['planning'], notes:'Objectives, starter, main activity, exit ticket.' });
+        histTasks.push({ id:'sample-task-prep-' + i, title:'Prepare materials for ' + topicName, project:topic.projectName, projectId:topic.project, priority:'low', due:dateOffset(-(6 + i * 9)), time:'', done:true, completedAt:dateOffset(-(6 + i * 9)), tags:['preparation'], notes:'' });
       });
       const tasks = [
         { id:'sample-task-pins-1', title:'Mark Grade 7 food chain assessments', project:'Ecosystems unit', projectId:'sample-project-ecosystems', priority:'high', due:today, time:'15:45', done:false, tags:['marking'], goalId:'sample-goal-marking', notes:'30 scripts. Aim to return by Wednesday with feedback.', subtasks:[{ id:'sample-st-1', title:'Mark section A (multiple choice)', done:true },{ id:'sample-st-2', title:'Mark section B (short answers)', done:true },{ id:'sample-st-3', title:'Mark section C (diagram)', done:false },{ id:'sample-st-4', title:'Record scores in gradebook', done:false }] },
         { id:'sample-task-pins-2', title:'Print science fair rubrics (30 copies)', project:'Science fair', projectId:'sample-project-sciencefair', priority:'medium', due:today, time:'12:30', done:false, tags:['preparation'], notes:'Use the school print room before lunch.' },
-        { id:'sample-task-pins-3', title:'Email Mr. Okafor about reading support plan', project:'Parent-teacher conferences', projectId:'sample-project-conferences', priority:'high', due:today, time:'14:00', done:false, tags:['parents'], goalId:'', notes:'Share the intervention notes before the conference.' },
+        { id:'sample-task-pins-3', title:'Email Family A about conference time', project:'Parent-teacher conferences', projectId:'sample-project-conferences', priority:'high', due:today, time:'14:00', done:false, tags:['parents'], goalId:'', notes:'Confirm the meeting time and share the general agenda.' },
         { id:'sample-task-overdue', title:'Submit term attendance report', project:'', projectId:'', priority:'high', due:dateOffset(-2), time:'', done:false, tags:['admin'], notes:'Send to the front office once registers are checked.' },
-        { id:'sample-task-weekly-register', title:'Update class register and seating plan', project:'', projectId:'', priority:'low', due:dateOffset(3), time:'08:00', done:false, tags:['admin'], recurrence:'weekly', recurrenceAnchorDate:dateOffset(3), notes:'Weekly Monday routine.' },
+        { id:'sample-task-weekly-register', title:'Update class register and seating plan', project:'', projectId:'', priority:'low', due:nextMonday, time:'08:00', done:false, tags:['admin'], recurrence:'weekly', recurrenceAnchorDate:nextMonday, notes:'Weekly Monday routine.' },
         { id:'sample-task-feedback-week', title:'Return feedback on lab reports', project:'Ecosystems unit', projectId:'sample-project-ecosystems', priority:'medium', due:dateOffset(2), time:'10:00', done:false, tags:['marking'], goalId:'sample-goal-marking', milestoneId:'sample-ms-eco-assess', notes:'' },
         { id:'sample-task-report-comments', title:'Write report card comments (Group A)', project:'Parent-teacher conferences', projectId:'sample-project-conferences', priority:'high', due:dateOffset(5), time:'17:00', done:false, tags:['reports'], milestoneId:'sample-ms-conf-reports', subtasks:[{ id:'sample-st-5', title:'Draft strengths and next steps', done:true },{ id:'sample-st-6', title:'Add attendance and effort notes', done:false },{ id:'sample-st-7', title:'Proofread', done:false }], notes:'Keep comments specific and encouraging.' },
         { id:'sample-task-fair-signup', title:'Collect science fair topic sign-up slips', project:'Science fair', projectId:'sample-project-sciencefair', priority:'medium', due:dateOffset(4), time:'09:00', done:false, tags:['science fair'], milestoneId:'sample-ms-fair-topics', notes:'' },
@@ -3908,14 +3917,14 @@
       /* ---------- Habits ---------- */
       const makeLog = (days, hit, startBack = 0) => { const out = []; for (let i = startBack; i < days; i++) { if (hit(i)) out.push(dateOffset(-i)); } return out; };
       const habits = [
-        { id:'sample-habit-planning', name:'Plan tomorrow’s lessons', icon:'✎', category:'Planning', area:'Work', frequency:'weekdays', startDate:dateOffset(-110), archived:false, goalId:'sample-goal-balance', log:makeLog(110, i => isWeekday(-i) && (i * 7 + 3) % 10 < 8) },
-        { id:'sample-habit-feedback', name:'Mark ten scripts before leaving school', icon:'✓', category:'Marking', area:'Work', frequency:'weekdays', startDate:dateOffset(-90), archived:false, goalId:'sample-goal-marking', log:makeLog(90, i => isWeekday(-i) && (i * 5 + 2) % 10 < 7) },
-        { id:'sample-habit-read', name:'Read for 20 minutes', icon:'📖', category:'Learning', area:'Learning', frequency:'daily', startDate:dateOffset(-100), archived:false, goalId:'sample-goal-cert', log:makeLog(100, i => (i * 3 + 1) % 10 < 7) },
-        { id:'sample-habit-run', name:'Go for a jog', icon:'☼', category:'Fitness', area:'Health', frequency:'weekly-target', targetCount:3, startDate:dateOffset(-100), archived:false, goalId:'sample-goal-5k', log:makeLog(100, i => [1,3,5].includes(((now.getDay() - i) % 7 + 7) % 7) && (i * 11 + 4) % 10 < 8) },
-        { id:'sample-habit-phone', name:'Phone away after 20:30', icon:'☾', category:'Rest', area:'Wellbeing', frequency:'daily', startDate:dateOffset(-80), archived:false, goalId:'sample-goal-balance', log:makeLog(80, i => (i * 9 + 5) % 10 < 6) },
-        { id:'sample-habit-praise', name:'Send one positive note home', icon:'✉', category:'Community', area:'Work', frequency:'weekly-target', targetCount:2, startDate:dateOffset(-85), archived:false, log:makeLog(85, i => [2,4].includes(((now.getDay() - i) % 7 + 7) % 7) && (i * 13 + 1) % 10 < 8) },
+        { id:'sample-habit-planning', name:'Plan tomorrow’s lessons', icon:'✎', category:'Planning', area:'Work', frequency:'weekdays', startDate:dateOffset(-60), archived:false, goalId:'sample-goal-balance', log:makeLog(60, i => isWeekday(-i) && (i * 7 + 3) % 10 < 8) },
+        { id:'sample-habit-feedback', name:'Mark ten scripts before leaving school', icon:'✓', category:'Marking', area:'Work', frequency:'weekdays', startDate:dateOffset(-60), archived:false, goalId:'sample-goal-marking', log:makeLog(60, i => isWeekday(-i) && (i * 5 + 2) % 10 < 7) },
+        { id:'sample-habit-read', name:'Read for 20 minutes', icon:'📖', category:'Learning', area:'Learning', frequency:'daily', startDate:dateOffset(-60), archived:false, goalId:'sample-goal-cert', log:makeLog(60, i => (i * 3 + 1) % 10 < 7) },
+        { id:'sample-habit-run', name:'Go for a jog', icon:'☼', category:'Fitness', area:'Health', frequency:'weekly-target', targetCount:3, startDate:dateOffset(-60), archived:false, goalId:'sample-goal-5k', log:makeLog(60, i => [1,3,5].includes(((now.getDay() - i) % 7 + 7) % 7) && (i * 11 + 4) % 10 < 8) },
+        { id:'sample-habit-phone', name:'Phone away after 20:30', icon:'☾', category:'Rest', area:'Wellbeing', frequency:'daily', startDate:dateOffset(-60), archived:false, goalId:'sample-goal-balance', log:makeLog(60, i => (i * 9 + 5) % 10 < 6) },
+        { id:'sample-habit-praise', name:'Send one positive note home', icon:'✉', category:'Community', area:'Work', frequency:'weekly-target', targetCount:2, startDate:dateOffset(-60), archived:false, log:makeLog(60, i => [2,4].includes(((now.getDay() - i) % 7 + 7) % 7) && (i * 13 + 1) % 10 < 8) },
         { id:'sample-habit-gratitude', name:'Write one thing that went well', icon:'☀', category:'Mindfulness', area:'Personal', frequency:'daily', startDate:dateOffset(-60), archived:false, log:makeLog(60, i => (i * 7 + 2) % 10 < 7) },
-        { id:'sample-habit-old', name:'Early arrival coffee with colleagues', icon:'☕', category:'Community', area:'Personal', frequency:'weekdays', startDate:dateOffset(-120), archived:true, log:makeLog(60, i => isWeekday(-i) && i > 30 && i % 3 === 0) }
+        { id:'sample-habit-old', name:'Early arrival coffee with colleagues', icon:'☕', category:'Community', area:'Personal', frequency:'weekdays', startDate:dateOffset(-60), archived:true, log:makeLog(60, i => isWeekday(-i) && i > 30 && i % 3 === 0) }
       ];
 
       /* ---------- Events ---------- */
@@ -3925,7 +3934,7 @@
         { id:'sample-ev-planning', title:'Weekly planning block', date:dateOffset(-((now.getDay() + 2) % 7) - 14), time:'14:30', endTime:'15:30', duration:60, type:'focus', recurrence:'weekly', detail:'Plan next week’s lessons and prepare resources.' },
         { id:'sample-ev-focus-today', title:'Marking focus block', date:today, time:'15:45', endTime:'16:30', duration:45, type:'focus', recurrence:'none', detail:'Food chain assessments.' },
         { id:'sample-ev-lab', title:'Pond water lab with Grade 7B', date:today, time:'10:30', endTime:'11:30', duration:60, type:'other', recurrence:'none', detail:'Science lab. Microscopes already set up.' },
-        { id:'sample-ev-parent-call', title:'Call with Mr. Okafor (reading support)', date:dateOffset(1), time:'15:00', endTime:'15:20', duration:20, type:'meeting', recurrence:'none', detail:'Share intervention notes and agree next steps.' },
+        { id:'sample-ev-parent-call', title:'Call with Family A (fictional)', date:dateOffset(1), time:'15:00', endTime:'15:20', duration:20, type:'meeting', recurrence:'none', detail:'Discuss optional reading resources and agree on a follow-up date.' },
         { id:'sample-ev-mentor', title:'Mentor check-in', date:dateOffset(3), time:'13:00', endTime:'13:30', duration:30, type:'review', recurrence:'none', detail:'Discuss differentiation strategies and the case study.' },
         { id:'sample-ev-coffee', title:'Coffee with colleagues', date:dateOffset(6), time:'10:00', endTime:'11:00', duration:60, type:'social', recurrence:'none', detail:'Department get-together.' },
         { id:'sample-ev-trip', title:'Field trip: Nature reserve', date:dateOffset(10), time:'08:30', endTime:'14:30', duration:360, type:'other', recurrence:'none', detail:'Bus leaves at 08:45. Take first aid kit and permission list.' },
@@ -3941,7 +3950,7 @@
       /* ---------- Focus sessions ---------- */
       const focusSessions = [];
       const focusTitles = ['Mark food chain assessments','Plan ecosystems lessons','Write report comments','Prepare lab materials','Update gradebook','Design science fair guide'];
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < 45; i++) {
         if (!isWeekday(-i) || (i * 7 + 1) % 10 > 6) continue;
         const sessions = 1 + (i * 3) % 3;
         for (let s = 0; s < sessions; s++) focusSessions.push({ id:'sample-focus-' + i + '-' + s, date:dateOffset(-i), minutes:pick([25,45,30,50], i + s), completedAt:dateOffset(-i), taskTitle:pick(focusTitles, i + s) });
@@ -3950,7 +3959,7 @@
       /* ---------- Notes ---------- */
       const notes = [
         { id:'sample-note-routines', title:'Classroom routines that work', date:dateOffset(-3), tags:['Classroom','Routines'], body:'Entry routine: bell work on the board, books out, silent start for 3 minutes.\nTransitions: countdown from 10, hand signal for silence.\nExit ticket: one sentence on what I learned and one question.\nPacking away: group leaders collect materials, tidy-up song (60 seconds).' },
-        { id:'sample-note-parent', title:'Parent meeting notes: Okafor family', date:dateOffset(-6), tags:['Parents','Students'], body:'Concerns: reading stamina and confidence in group work.\nAgreed: 15 minutes of home reading each evening, weekly check-in note.\nNext step: share intervention notes and review in three weeks.' },
+        { id:'sample-note-parent', title:'Conference notes: Family A (fictional)', date:dateOffset(-6), tags:['Parents','Students'], body:'Discussed classroom reading resources and ways to build a regular reading routine.\nAgreed: share optional resources and check in at the next conference.' },
         { id:'sample-note-pd', title:'PD takeaways: assessment for learning', date:dateOffset(-17), tags:['Professional development','Ideas'], body:'Use mini whiteboards for instant checks.\nShare success criteria at the start of each lesson.\nTwo stars and a wish peer feedback.\nTry: traffic-light cups for self-assessment.' },
         { id:'sample-note-lab', title:'Pond water lab: lessons learned', date:dateOffset(-14), tags:['Science','Lessons'], body:'Prepare slides the day before. Pairs worked better than groups of four.\nStudents loved the microscopes. Allow 10 extra minutes for clean-up.' },
         { id:'sample-note-reading', title:'Reading list for next term', date:dateOffset(-22), tags:['Reading','Planning'], body:'1. Inside the Black Box (assessment)\n2. Teach Like a Champion\n3. A graded reader set for Grade 7\n4. Short science articles for starter activities' },
@@ -3992,7 +4001,7 @@
       /* ---------- Finances ---------- */
       const financeTransactions = [];
       const addTx = (id, type, amount, date, category, method, description, recurring) => { if (date <= today) financeTransactions.push({ id, type, amount, date, category, method, description, recurring:recurring || 'none' }); };
-      for (let m = 0; m < 6; m++) {
+      for (let m = 0; m < 3; m++) {
         const latest = m === 0;
         addTx('sample-tx-salary-' + m, 'income', 3200, monthDate(m, 1), 'Salary', 'Transfer', 'Monthly teaching salary', latest ? 'monthly' : 'none');
         if (m !== 2) addTx('sample-tx-tutor-' + m, 'income', 120 + (m * 40) % 160, monthDate(m, 15), 'Freelance', 'Transfer', 'Weekend tutoring sessions', 'none');
@@ -4043,7 +4052,7 @@
       /* ---------- Wellbeing ---------- */
       const wellbeingMoods = [];
       const moodNotes = { 5:'A brilliant day in class.', 4:'A steady day with good moments.', 3:'Tired but fine.', 2:'Heavy workload today.', 1:'A very hard day.' };
-      for (let i = 0; i < 75; i++) {
+      for (let i = 0; i < 30; i++) {
         const score = i === 0 ? 4 : [4,4,3,5,4,2,4,3,4,5,3,4,4,2,5,4][(i * 5 + 3) % 16];
         wellbeingMoods.push({ id:'sample-mood-' + i, date:dateOffset(-i), mood:score, note:i % 4 === 0 ? moodNotes[score] : '' });
       }
@@ -4069,7 +4078,7 @@
       ];
       const wellbeingActivities = [];
       const fitnessTitles = ['Jog in the park','Evening walk','Yoga stretch','Cycling','Swimming'];
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 30; i++) {
         wellbeingActivities.push({ id:'sample-sleep-' + i, type:'sleep', title:'Sleep', amount:[6.5,7,7.5,6,8,7,7][(i * 3) % 7], quality:pick(['Fair','Good','Restful','Good','Fair'], i), date:dateOffset(-i) });
         if ((i * 5 + 1) % 7 < 3) wellbeingActivities.push({ id:'sample-fit-' + i, type:'fitness', title:pick(fitnessTitles, i), amount:[30,45,25,40,60][(i * 2) % 5], quality:pick(['Gentle','Moderate','Light','Vigorous'], i), date:dateOffset(-i) });
       }
@@ -4162,7 +4171,7 @@
       const sampleDataNotice = document.getElementById('dataSavedNoticeText');
       const clearSampleDataButton = document.getElementById('clearSampleDataButton');
       if (sampleDataNotice) sampleDataNotice.textContent = data.settings.sampleData
-        ? 'Example data is loaded. Clear it when you are ready to start fresh.'
+        ? 'Fictional teacher examples are loaded. Names and figures are illustrative; avoid identifiable student or family information.'
         : 'Your data is saved in this browser.';
       updateStorageRiskNotice();
       if (clearSampleDataButton) clearSampleDataButton.hidden = !data.settings.sampleData;
@@ -4350,7 +4359,7 @@
       if(dismissButton)dismissButton.hidden=!atRisk||dismissed;
       if(!storageAvailable)message.textContent='Browser storage is unavailable. Changes may not survive closing this page; export a JSON backup now.';
       else if(fileOrigin)message.textContent='A quick tip: a file workspace may not move with your browser. Export a JSON backup occasionally to keep a copy.';
-      else message.textContent=data.settings.sampleData?'Example data is loaded. Clear the examples when you are ready to start fresh.':'Your data is saved in this browser.';
+      else message.textContent=data.settings.sampleData?'Fictional teacher examples are loaded. Names and figures are illustrative; avoid identifiable student or family information.':'Your data is saved in this browser.';
     }
     function moduleMoney(value, currency = '') {
       const amount = Number(value) || 0;
